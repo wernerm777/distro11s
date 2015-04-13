@@ -8,7 +8,7 @@ function clean_install_state {
 	echo "Fixing installation issues"
 	# Cleanup any failed package installs/upgrades
 	yes "" | sudo chroot ${STAGING} dpkg --configure -a --force-all
-	yes "" | sudo chroot ${STAGING} aptitude -y -f install
+	yes "" | sudo chroot ${STAGING} apt -f install
 }
 
 if [ ! -e  ${STAMPS}/debian-rootfs.bootstrapped -o ${FORCE_BUILD} -eq 1 ]; then
@@ -39,18 +39,18 @@ if [ ! -e  ${STAMPS}/debian-rootfs.bootstrapped -o ${FORCE_BUILD} -eq 1 ]; then
 fi
 
 echo "Updating package cache"
-sudo chroot ${STAGING} aptitude update
+sudo chroot ${STAGING} apt update
 clean_install_state
 echo "Updating installed packages"
-yes "" | sudo chroot ${STAGING} aptitude -y full-upgrade
+yes "" | sudo chroot ${STAGING} apt full-upgrade
 clean_install_state
 echo "Install locales support"
-yes "" | sudo chroot ${STAGING} aptitude -y install locales
+yes "" | sudo chroot ${STAGING} apt install locales
 sudo chroot ${STAGING} sed -i -e "s/^#\s*\(.*$LANG\)/\1/" /etc/locale.gen
-sudo chroot ${STAGING} locale-gen
+#sudo chroot ${STAGING} locale-gen
 echo "Updating base packages"
-yes "" | sudo chroot ${STAGING} aptitude -y --without-recommends install ${BOARD11S_PACKAGES} || exit 1
-yes "" | sudo chroot ${STAGING} aptitude -y build-dep ${BOARD11S_BUILDDEP_PACKAGES} || exit 1
+yes "" | sudo chroot ${STAGING} apt install ${BOARD11S_PACKAGES} || exit 1
+#yes "" | sudo chroot ${STAGING} apt build-dep ${BOARD11S_BUILDDEP_PACKAGES} || exit 1
 
 cp ${DISTRO11S_CONF} ${STAGING}/etc/distro11s.conf || exit 1
 

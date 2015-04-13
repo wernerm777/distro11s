@@ -35,6 +35,8 @@ mkdir -p ${STAGING}/etc/distro11s-versions.d
 
 PACKAGES=`cat ${PKGLIST}`
 for p in ${PACKAGES}; do
+	echo $p
+	echo " "
 	parse_pkg $p
 	if [ "${URL}" != "" -a ! -e  ${SRCDIR} ]; then
 		echo "Expected package ${NAME} in ${SRCDIR}.  Consider running fetch.sh"
